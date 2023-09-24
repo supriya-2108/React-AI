@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import GeneratedStory from './GeneratedStory'
+import axios from 'axios';
+const App = () => {
+  
+  const [prompt,setPrompt]=useState('')
+  const [dummy,setDummy]=useState('')
+  const [story,setStory]=useState('')
+  const PromptShare=(event)=>{
+    event.preventDefault()
+    setPrompt(dummy)
 
-function App() {
+    axios.post('/generate_story', { prompt })
+            .then((response) => {
+                setStory(response.data);
+            })
+            .catch((error) => {
+                console.error('Error generating story:', error);
+            });
+    };
+    
+  
+
+  const handlePromptChange=(event)=>{
+    setDummy(event.target.value);
+    
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+     <form>
+      <label>Enter the prompt</label>
+      <textarea name="prompt" value={dummy} onChange={handlePromptChange}/>
+      <button type='submit' onClick={PromptShare}>Submit</button>
+      <GeneratedStory prompt={prompt}/>
+      </form> 
+    </>
+  )
 }
 
-export default App;
+export default App
