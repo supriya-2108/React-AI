@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
-import { RWebShare } from "react-web-share";
 const App = () => {
   const [prompt,setPrompt]=useState('')
   const [story,setStory]=useState('')
@@ -8,18 +7,19 @@ const App = () => {
     event.preventDefault()
     const data={key1:prompt}
     fetch("http://127.0.0.1:8080/story",{
-      method: "POST",
+      method: "POST",   
       headers: {
-          'Content-Type': 'application/json', // Set the Content-Type header
+          'Content-Type': 'application/json', 
       },
       body:JSON.stringify(data.key1)
-  }).then( response => response.text() )
-  .then( text => {setStory(text)} )
+  }).then( response=> response.text())
+  .then((data) => {
+    setStory(data);
+})
   .catch((error) => {
       // Handle any errors
       console.error('Error sending data:', error);
   });
-  
 }
 const downloadText = () => {
   const text = story; // Get the content from the textarea
@@ -75,13 +75,11 @@ const share=()=>{
       <label>Enter the prompt for the story you want to create</label><br/>
       <input type="text" name="prompt" value={prompt} onChange={handlePromptChange}/>
       <button type='submit' onClick={PromptShare}>Submit</button><br/><br/><br/>
-     
       </form> 
       {
         story!==""?<><label style={{fontWeight:"bold"}}>YourStory</label><br/><textarea value={story} style={{height:"400px",width:"600px",border:"none"}} /><br/><button onClick={downloadText}>Save</button><button onClick={share}>Share</button></>:""
       }
     </div>
-    
     </>
   )
 }
